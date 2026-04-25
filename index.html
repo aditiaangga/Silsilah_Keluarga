@@ -1,0 +1,2598 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Silsilah Keluarga Pro</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Inter"', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d'
+            },
+            accent: {
+              purple: '#a855f7',
+              pink: '#f43f5e',
+              orange: '#f97316',
+              emerald: '#10b981',
+              warm: '#f59e0b',
+              nature: '#15803d'
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.6s ease-out forwards',
+            'slide-up': 'slideUp 0.6s ease-out forwards',
+            'slide-down': 'slideDown 0.5s ease-out forwards',
+            'scale-in': 'scaleIn 0.5s ease-out forwards',
+            'float': 'float 6s ease-in-out infinite',
+            'glow': 'glow 2s ease-in-out infinite alternate',
+            'shimmer': 'shimmer 2s linear infinite',
+          },
+          keyframes: {
+            fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+            slideUp: {
+              '0%': { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' }
+            },
+            slideDown: {
+              '0%': { opacity: '0', transform: 'translateY(-20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' }
+            },
+            scaleIn: {
+              '0%': { opacity: '0', transform: 'scale(0.9)' },
+              '100%': { opacity: '1', transform: 'scale(1)' }
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-20px)' }
+            },
+            glow: {
+              '0%': { boxShadow: '0 0 20px rgba(14, 165, 233, 0.3)' },
+              '100%': { boxShadow: '0 0 40px rgba(14, 165, 233, 0.6)' }
+            },
+            shimmer: {
+              '0%': { backgroundPosition: '-1000px 0' },
+              '100%': { backgroundPosition: '1000px 0' }
+            }
+          },
+          backgroundImage: {
+            'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+            'gradient-mesh': 'linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar - Modern Style */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #22c55e, #16a34a);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #16a34a, #15803d);
+    }
+
+    /* Enhanced Glass Effect */
+    .glass {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+    }
+
+    .glass-dark {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Gradient Text */
+    .gradient-text {
+      background: linear-gradient(135deg, #22c55e 0%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Animated Background */
+    .animated-bg {
+      background: linear-gradient(-45deg, #f0fdf4, #fef9c3, #dcfce7, #fef3c7);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+    }
+
+    @keyframes gradient {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Tree Node Styling - Enhanced */
+    .node rect {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.07));
+    }
+
+    .node:hover rect {
+      filter: drop-shadow(0 20px 25px rgba(14, 165, 233, 0.2));
+      transform: translateY(-4px) scale(1.02);
+    }
+
+    .link {
+      fill: none;
+      stroke-width: 2.5px;
+      transition: all 0.4s;
+      opacity: 0.55;
+    }
+
+    .link:hover {
+      opacity: 1;
+      stroke-width: 3.5px;
+    }
+
+    .node text {
+      font-family: 'Inter', sans-serif;
+      pointer-events: none;
+    }
+
+    /* Mesh Background Pattern */
+    .bg-mesh {
+      background-color: #f8fafc;
+      background-image:
+        linear-gradient(rgba(14, 165, 233, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14, 165, 233, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+
+    /* Card Hover Effects */
+    .stat-card {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .stat-card:hover::before {
+      left: 100%;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(14, 165, 233, 0.15);
+    }
+
+    /* Pulse Animation for Icons */
+    .pulse-icon {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: .7;
+      }
+    }
+
+    /* Button Hover Effects */
+    .btn-modern {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .btn-modern::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-modern:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    /* Mobile Nav Active State */
+    .mobile-nav-item {
+      transition: all 0.3s ease;
+    }
+
+    .mobile-nav-item.active {
+      color: #16a34a;
+      background: #f0fdf4;
+      transform: translateY(-2px);
+    }
+
+    .mobile-nav-item.active i {
+      animation: bounce 0.5s ease;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+
+    /* Loading Animation */
+    .loading-spinner {
+      border: 4px solid rgba(14, 165, 233, 0.1);
+      border-top: 4px solid #0ea5e9;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Shimmer Effect */
+    .shimmer {
+      background: linear-gradient(90deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.3) 50%,
+          rgba(255, 255, 255, 0) 100%);
+      background-size: 200% 100%;
+      animation: shimmer 2s infinite;
+    }
+  </style>
+</head>
+
+<body class="text-slate-800 h-screen flex flex-col overflow-hidden selection:bg-brand-500 selection:text-white"
+  style="background: linear-gradient(-45deg, #f0fdf4, #fef9c3, #dcfce7, #fef3c7); background-size: 400% 400%; animation: gradient 15s ease infinite;">
+
+  <!-- LOGIN OVERLAY -->
+  <div id="login-overlay" class="fixed inset-0 z-[9999] flex items-center justify-center"
+    style="background: linear-gradient(135deg, #14532d 0%, #15803d 40%, #166534 70%, #1e3a1e 100%);">
+    <!-- Decorative circles -->
+    <div class="absolute top-10 left-10 w-40 h-40 rounded-full opacity-20 animate-float"
+      style="background:radial-gradient(circle,#4ade80,transparent)"></div>
+    <div class="absolute bottom-20 right-10 w-56 h-56 rounded-full opacity-15 animate-float"
+      style="background:radial-gradient(circle,#f59e0b,transparent);animation-delay:1.5s"></div>
+    <div class="absolute top-1/2 left-5 w-24 h-24 rounded-full opacity-10 animate-float"
+      style="background:radial-gradient(circle,#bbf7d0,transparent);animation-delay:3s"></div>
+
+    <div
+      class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 w-full max-w-md mx-4 animate-scale-in relative overflow-hidden">
+      <!-- Top decoration bar -->
+      <div class="absolute top-0 left-0 right-0 h-2 rounded-t-3xl"
+        style="background: linear-gradient(90deg, #22c55e, #f59e0b, #f97316, #22c55e); background-size: 200%; animation: shimmer 3s linear infinite;">
+      </div>
+
+      <div class="text-center mb-7">
+        <!-- Tree illustration -->
+        <div class="relative inline-block mb-3">
+          <div class="w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-xl"
+            style="background: linear-gradient(135deg, #22c55e, #16a34a);">
+            🌳
+          </div>
+          <div
+            class="absolute -top-1 -right-1 w-7 h-7 rounded-full bg-amber-400 border-2 border-white flex items-center justify-center text-sm shadow-md">
+            ✨</div>
+        </div>
+        <h1 class="text-3xl font-black text-slate-900">Silsilah<span style="color:#16a34a">Keluarga</span></h1>
+        <p class="text-slate-500 mt-1 text-sm font-medium">🔐 Masukkan password untuk melanjutkan</p>
+      </div>
+
+      <!-- Role Toggle -->
+      <div class="flex rounded-2xl bg-slate-100 p-1 mb-5">
+        <button type="button" onclick="setLoginRole('admin')" id="role-btn-admin"
+          class="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all bg-white text-brand-600 shadow">
+          <i class="fas fa-shield-alt mr-1"></i> Admin
+        </button>
+        <button type="button" onclick="setLoginRole('user')" id="role-btn-user"
+          class="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500">
+          <i class="fas fa-user mr-1"></i> Pengguna
+        </button>
+      </div>
+
+      <!-- Generasi select (hanya untuk user) -->
+      <div id="login-generasi-wrap" class="hidden mb-4">
+        <div class="relative">
+          <i class="fas fa-layer-group absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <select id="login-generasi"
+            class="w-full pl-12 pr-4 py-4 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/20 font-medium text-slate-700 transition-all appearance-none">
+            <option value="">-- Pilih Generasi Anda --</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <div class="relative">
+          <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input type="password" id="login-password" placeholder="Password"
+            class="w-full pl-12 pr-12 py-4 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/20 font-medium text-slate-700 transition-all"
+            onkeydown="if(event.key==='Enter') doLogin()" />
+          <button type="button" onclick="toggleLoginPassword()"
+            class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-500 transition-colors focus:outline-none">
+            <i id="login-eye-icon" class="fas fa-eye text-base"></i>
+          </button>
+        </div>
+
+        <p id="login-error"
+          class="hidden text-sm text-rose-500 font-semibold text-center bg-rose-50 py-2 px-4 rounded-xl">
+          Password salah. Coba lagi.
+        </p>
+
+        <button onclick="doLogin()" id="login-btn"
+          class="w-full bg-gradient-to-r from-brand-500 to-brand-700 text-white py-4 rounded-2xl font-black text-lg shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 active:scale-95">
+          <i class="fas fa-sign-in-alt mr-2"></i> Masuk
+        </button>
+      </div>
+
+    </div>
+  </div>
+  <div id="loading-overlay"
+    class="fixed inset-0 z-50 flex flex-col items-center justify-center transition-opacity duration-500"
+    style="background: linear-gradient(135deg, #14532d 0%, #15803d 50%, #1e3a1e 100%);">
+    <div class="relative mb-4">
+      <div class="text-8xl animate-bounce">🌳</div>
+      <div class="absolute -top-2 -right-2 text-3xl animate-spin" style="animation-duration:3s">🍃</div>
+      <div class="absolute -bottom-1 -left-2 text-2xl animate-pulse">🌿</div>
+    </div>
+    <p class="mt-2 text-white font-black tracking-wider text-xl">Memuat Silsilah Keluarga...</p>
+    <p class="text-green-300 text-sm mt-1">Menyiapkan pohon keluarga Anda 🌱</p>
+    <div class="mt-5 flex gap-3">
+      <div class="w-3 h-3 bg-amber-400 rounded-full animate-bounce" style="animation-delay: 0s"></div>
+      <div class="w-3 h-3 bg-green-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+      <div class="w-3 h-3 bg-orange-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+    </div>
+  </div>
+
+  <header class="sticky top-0 z-40 animate-slide-down border-b border-green-200/40"
+    style="background:rgba(255,255,255,0.88);backdrop-filter:blur(20px);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-20 gap-4">
+
+        <div class="flex items-center gap-3 shrink-0">
+          <div class="relative hidden md:flex w-12 h-12 rounded-2xl items-center justify-center text-2xl shadow-lg"
+            style="background:linear-gradient(135deg,#22c55e,#16a34a);">
+            🌳
+          </div>
+          <div>
+            <h1 class="text-xl md:text-2xl font-black tracking-tight leading-none" style="color:#14532d">
+              Silsilah<span style="color:#16a34a">Keluarga</span>
+            </h1>
+            <p class="hidden md:block text-[10px] font-bold text-green-600 uppercase tracking-widest">🌿 Digital Family
+              Tree</p>
+          </div>
+        </div>
+
+        <div class="flex-1 max-w-md relative z-50">
+          <div class="relative group">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-search text-slate-400 group-focus-within:text-brand-500 transition-colors"></i>
+            </div>
+            <input type="text" id="global-search"
+              class="block w-full pl-10 pr-3 py-2.5 border-none rounded-xl bg-slate-100/50 focus:bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/50 shadow-inner transition-all text-sm font-medium"
+              placeholder="Cari anggota keluarga..." autocomplete="off">
+
+            <div id="search-results"
+              class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 max-h-80 overflow-y-auto scrollbar-hide animation-slide-up">
+            </div>
+          </div>
+        </div>
+
+        <nav class="hidden lg:flex items-center gap-2 p-1.5 rounded-2xl shadow-inner"
+          style="background:rgba(220,252,231,0.6);">
+          <button onclick="switchTab('dashboard')" id="nav-dashboard"
+            class="nav-item relative px-6 py-3 text-sm font-bold rounded-xl text-white shadow-lg transition-all duration-300"
+            style="background:linear-gradient(135deg,#22c55e,#16a34a)">
+            🏠 Dashboard
+          </button>
+          <button onclick="switchTab('tree')" id="nav-tree"
+            class="nav-item px-6 py-3 text-sm font-bold rounded-xl text-green-700 hover:text-green-900 hover:bg-white/80 transition-all duration-300">
+            🌳 Pohon Visual
+          </button>
+          <button onclick="switchTab('form')" id="nav-form"
+            class="nav-item admin-only px-6 py-3 text-sm font-bold rounded-xl text-green-700 hover:text-green-900 hover:bg-white/80 transition-all duration-300">
+            ➕ Tambah Data
+          </button>
+        </nav>
+
+        <div class="hidden md:flex shrink-0 items-center gap-2">
+          <span id="role-badge"
+            class="inline-flex items-center gap-2 text-xs font-black text-white px-4 py-2 rounded-full shadow-lg"
+            style="background:linear-gradient(135deg,#22c55e,#15803d)">
+            <i class="fas fa-crown"></i> <span id="role-badge-text">PRO</span>
+          </span>
+          <button onclick="showChangePassword()" id="btn-change-password"
+            class="admin-only inline-flex items-center gap-2 text-xs font-bold text-green-700 bg-white hover:bg-green-50 border border-green-200 px-3 py-2 rounded-full shadow transition-all"
+            title="Ganti Password">
+            🔑 Password
+          </button>
+          <button onclick="doLogout()"
+            class="inline-flex items-center gap-2 text-xs font-bold text-white bg-rose-500 hover:bg-rose-600 px-3 py-2 rounded-full shadow transition-all"
+            title="Logout">
+            <i class="fas fa-sign-out-alt"></i> Keluar
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow relative overflow-hidden">
+
+    <div id="view-dashboard" class="view-section h-full overflow-y-auto pb-32 animate-fade-in"
+      style="background:linear-gradient(160deg,#f0fdf4 0%,#fef9c3 60%,#f0fdf4 100%)">
+      <div class="max-w-7xl mx-auto px-4 md:px-8 pt-8">
+
+        <!-- Hero Banner -->
+        <div class="relative rounded-3xl overflow-hidden mb-8 shadow-2xl animate-scale-in"
+          style="background:linear-gradient(135deg,#14532d 0%,#15803d 45%,#f59e0b 100%);">
+          <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-4 right-8 text-9xl opacity-20 animate-float">🌳</div>
+            <div class="absolute bottom-2 right-28 text-5xl opacity-25 animate-float" style="animation-delay:1s">🍃
+            </div>
+            <div class="absolute top-8 right-44 text-4xl opacity-15 animate-float" style="animation-delay:2s">🌿</div>
+            <div class="absolute bottom-0 left-1/2 text-6xl opacity-10 animate-float" style="animation-delay:0.5s">🌱
+            </div>
+          </div>
+          <div class="relative z-10 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="text-white text-center md:text-left">
+              <div
+                class="inline-flex items-center gap-2 bg-white/20 backdrop-blur px-4 py-2 rounded-full text-sm font-bold mb-4">
+                🌿 <span>Silsilah Digital</span>
+              </div>
+              <h2 class="text-3xl md:text-5xl font-black mb-3 leading-tight">
+                Pohon Keluarga<br><span class="text-amber-300">Anda 🌳</span>
+              </h2>
+              <p class="text-green-100 text-base md:text-lg max-w-md">
+                Visualisasikan hubungan antar generasi dalam tampilan interaktif yang menakjubkan.
+              </p>
+            </div>
+            <button onclick="switchTab('tree')"
+              class="group bg-white font-black shadow-2xl transition-all transform hover:-translate-y-2 active:scale-95 flex items-center gap-3 text-lg px-8 py-4 rounded-2xl whitespace-nowrap"
+              style="color:#15803d">
+              🌳 Buka Pohon Keluarga
+              <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mb-8">
+          <div class="stat-card rounded-3xl p-5 shadow-xl border-2 animate-slide-up"
+            style="background:linear-gradient(135deg,#fefce8,#fef9c3);border-color:#fde68a;animation-delay:0.1s">
+            <div class="text-4xl mb-2">🌲</div>
+            <p class="text-4xl font-black mb-1" style="color:#92400e" id="stat-gen">-</p>
+            <p class="text-xs font-bold text-amber-700 uppercase tracking-wide">Total Generasi</p>
+          </div>
+          <div class="stat-card rounded-3xl p-5 shadow-xl border-2 animate-slide-up"
+            style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#86efac;animation-delay:0.2s">
+            <div class="text-4xl mb-2">👴</div>
+            <p class="text-4xl font-black mb-1" style="color:#166534" id="stat-parents">-</p>
+            <p class="text-xs font-bold text-green-700 uppercase tracking-wide">Orang Tua</p>
+          </div>
+          <div class="stat-card rounded-3xl p-5 shadow-xl border-2 animate-slide-up"
+            style="background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74;animation-delay:0.3s">
+            <div class="text-4xl mb-2">👨‍👩‍👧‍👦</div>
+            <p class="text-4xl font-black mb-1" style="color:#9a3412" id="stat-members">-</p>
+            <p class="text-xs font-bold text-orange-700 uppercase tracking-wide">Total Anggota</p>
+          </div>
+          <div class="stat-card rounded-3xl p-5 shadow-xl border-2 animate-slide-up"
+            style="background:linear-gradient(135deg,#fdf2f8,#fce7f3);border-color:#f9a8d4;animation-delay:0.4s">
+            <div class="text-4xl mb-2">👶</div>
+            <p class="text-4xl font-black mb-1" style="color:#9d174d" id="stat-children">-</p>
+            <p class="text-xs font-bold text-pink-700 uppercase tracking-wide">Total Penerus</p>
+          </div>
+        </div>
+
+        <!-- Feature Cards -->
+        <div class="grid md:grid-cols-3 gap-5 mb-8">
+          <div class="rounded-2xl p-6 hover:shadow-xl transition-all duration-300 group border-2 cursor-default"
+            style="background:rgba(255,255,255,0.85);border-color:#bbf7d0">
+            <div class="text-4xl mb-3 group-hover:scale-110 transition-transform inline-block">🛡️</div>
+            <h4 class="text-lg font-bold mb-1" style="color:#14532d">Data Aman</h4>
+            <p class="text-sm text-slate-600">Tersimpan langsung di Google Spreadsheet milik Anda sendiri.</p>
+          </div>
+          <div class="rounded-2xl p-6 hover:shadow-xl transition-all duration-300 group border-2 cursor-default"
+            style="background:rgba(255,255,255,0.85);border-color:#fde68a">
+            <div class="text-4xl mb-3 group-hover:scale-110 transition-transform inline-block">⚡</div>
+            <h4 class="text-lg font-bold mb-1" style="color:#92400e">Real-time Sync</h4>
+            <p class="text-sm text-slate-600">Perubahan data langsung tersinkronisasi dan bisa diakses dari mana saja.
+            </p>
+          </div>
+          <div class="rounded-2xl p-6 hover:shadow-xl transition-all duration-300 group border-2 cursor-default"
+            style="background:rgba(255,255,255,0.85);border-color:#fdba74">
+            <div class="text-4xl mb-3 group-hover:scale-110 transition-transform inline-block">📱</div>
+            <h4 class="text-lg font-bold mb-1" style="color:#9a3412">Responsif</h4>
+            <p class="text-sm text-slate-600">Akses dari desktop, tablet, maupun smartphone dengan pengalaman optimal.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="view-tree" class="view-section hidden h-full w-full relative overflow-hidden animate-fade-in"
+      style="background: linear-gradient(160deg, #1a3a1a 0%, #14532d 30%, #166534 60%, #1e4620 100%);">
+
+      <!-- Decorative leaf/organic blobs -->
+      <div
+        style="position:absolute;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,0.2),transparent);pointer-events:none;">
+      </div>
+      <div
+        style="position:absolute;bottom:-60px;left:-60px;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,0.15),transparent);pointer-events:none;">
+      </div>
+      <!-- Dot pattern overlay -->
+      <div
+        style="position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.04) 1px,transparent 1px);background-size:30px 30px;pointer-events:none;">
+      </div>
+
+      <!-- Zoom Controls -->
+      <div class="absolute top-4 left-4 z-20 flex flex-col gap-2">
+        <button onclick="svg.transition().duration(400).call(zoom.scaleBy,1.3)"
+          class="w-11 h-11 rounded-2xl backdrop-blur shadow-lg font-bold transition-all active:scale-95 flex items-center justify-center text-white border border-white/20"
+          style="background:rgba(255,255,255,0.15)" title="Zoom in">
+          <i class="fas fa-plus text-sm"></i>
+        </button>
+        <button onclick="svg.transition().duration(400).call(zoom.scaleBy,0.77)"
+          class="w-11 h-11 rounded-2xl backdrop-blur shadow-lg font-bold transition-all active:scale-95 flex items-center justify-center text-white border border-white/20"
+          style="background:rgba(255,255,255,0.15)" title="Zoom out">
+          <i class="fas fa-minus text-sm"></i>
+        </button>
+        <button onclick="resetZoom()"
+          class="w-11 h-11 rounded-2xl backdrop-blur shadow-lg font-bold transition-all active:scale-95 flex items-center justify-center text-white border border-white/20"
+          style="background:rgba(255,255,255,0.15)" title="Reset tampilan">
+          <i class="fas fa-expand-arrows-alt text-sm"></i>
+        </button>
+
+        <!-- Divider -->
+        <div class="border-t border-white/20 mx-1"></div>
+
+        <!-- Expand / Collapse All -->
+        <button id="btn-expand-all" onclick="toggleExpandAll()"
+          class="w-11 h-11 rounded-2xl backdrop-blur shadow-lg font-bold transition-all active:scale-95 flex items-center justify-center text-white border border-white/20"
+          style="background:rgba(255,255,255,0.15)" title="Buka semua generasi">
+          <i class="fas fa-sitemap text-sm"></i>
+        </button>
+        <span id="label-expand-all" class="text-white text-center font-bold leading-tight"
+          style="font-size:9px;text-shadow:0 1px 3px rgba(0,0,0,0.5);">
+          Buka<br>Semua
+        </span>
+      </div>
+
+      <!-- Legend Panel (collapsible) -->
+      <div class="absolute top-4 right-4 z-20">
+        <button onclick="toggleInfoLegend()"
+          class="flex items-center gap-2 backdrop-blur rounded-2xl shadow-lg px-3 py-2.5 text-xs font-bold text-white border border-white/20 transition-all active:scale-95"
+          style="background:rgba(255,255,255,0.15)">
+          <i class="fas fa-info-circle"></i>
+          <span>Keterangan</span>
+          <i id="info-legend-chevron" class="fas fa-chevron-down text-white/60 transition-transform duration-300"></i>
+        </button>
+        <div id="info-legend-panel"
+          class="hidden mt-2 bg-white/95 backdrop-blur rounded-2xl shadow-xl border border-white/60 p-4 min-w-[160px] animate-slide-down">
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 rounded-full bg-emerald-400 ring-2 ring-emerald-100 shrink-0"></div>
+              <span class="text-xs font-semibold text-slate-600">Hidup</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 rounded-full bg-slate-300 ring-2 ring-slate-100 shrink-0"></div>
+              <span class="text-xs font-semibold text-slate-600">Almarhum/ah</span>
+            </div>
+            <div class="border-t border-slate-100 my-2"></div>
+            <div class="flex items-center gap-2">
+              <i class="fas fa-mars text-blue-500 text-xs w-3 text-center shrink-0"></i>
+              <span class="text-xs font-semibold text-slate-600">Laki-laki</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="fas fa-venus text-pink-500 text-xs w-3 text-center shrink-0"></i>
+              <span class="text-xs font-semibold text-slate-600">Perempuan</span>
+            </div>
+            <div class="border-t border-slate-100 my-2"></div>
+            <div class="flex items-center gap-2">
+              <i class="fas fa-hand-pointer text-brand-400 text-xs w-3 text-center shrink-0"></i>
+              <span class="text-xs text-slate-400">Klik = detail</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="fas fa-circle-plus text-amber-400 text-xs w-3 text-center shrink-0"></i>
+              <span class="text-xs text-slate-400">Klik = buka/tutup</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Generation Color Legend (collapsible, populated by JS) -->
+      <div id="gen-legend" class="absolute bottom-20 md:bottom-4 left-4 z-20 hidden">
+        <button onclick="toggleGenLegend()"
+          class="flex items-center gap-2 backdrop-blur rounded-2xl shadow-lg px-3 py-2.5 text-xs font-bold text-white border border-white/20 transition-all active:scale-95"
+          style="background:rgba(255,255,255,0.15)">
+          <i class="fas fa-palette"></i>
+          <span>Warna Generasi</span>
+          <i id="gen-legend-chevron" class="fas fa-chevron-up text-white/60 transition-transform duration-300"></i>
+        </button>
+        <div id="gen-legend-panel"
+          class="mt-2 bg-white/95 backdrop-blur rounded-2xl shadow-xl border border-white/60 p-3">
+          <div id="gen-legend-items" class="flex flex-wrap gap-1.5 max-w-xs"></div>
+        </div>
+      </div>
+
+      <!-- Ground grass decoration -->
+      <div style="position:absolute;bottom:0;left:0;right:0;height:60px;pointer-events:none;z-index:1;">
+        <svg viewBox="0 0 1200 60" preserveAspectRatio="none" style="width:100%;height:100%;"
+          xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,40 Q150,0 300,30 Q450,60 600,20 Q750,0 900,35 Q1050,60 1200,25 L1200,60 L0,60 Z"
+            fill="rgba(34,197,94,0.15)" />
+          <path d="M0,50 Q200,20 400,45 Q600,60 800,30 Q1000,10 1200,40 L1200,60 L0,60 Z" fill="rgba(34,197,94,0.1)" />
+        </svg>
+      </div>
+      <!-- Floating leaf particles -->
+      <div
+        style="position:absolute;top:15%;left:5%;font-size:20px;opacity:0.25;animation:float 8s ease-in-out infinite;pointer-events:none;">
+        🍃</div>
+      <div
+        style="position:absolute;top:60%;left:92%;font-size:16px;opacity:0.2;animation:float 10s ease-in-out infinite;animation-delay:2s;pointer-events:none;">
+        🌿</div>
+      <div
+        style="position:absolute;top:80%;left:8%;font-size:18px;opacity:0.2;animation:float 7s ease-in-out infinite;animation-delay:4s;pointer-events:none;">
+        🍂</div>
+      <div id="tree-container" class="w-full h-full" style="position:relative;z-index:2;"></div>
+    </div>
+
+    <div id="view-form" class="view-section hidden h-full overflow-y-auto p-4 pb-32 md:p-8 bg-mesh animate-fade-in">
+      <div class="max-w-3xl mx-auto">
+
+        <div class="text-center mb-10 animate-slide-up">
+          <div
+            class="inline-flex items-center gap-3 bg-gradient-to-r from-brand-500 to-brand-700 text-white px-6 py-3 rounded-full mb-6 shadow-lg">
+            <i class="fas fa-user-plus text-xl"></i>
+            <span class="font-bold">Manajemen Data</span>
+          </div>
+          <h2 class="text-4xl font-black text-slate-900 mb-3">
+            Form Input <span class="gradient-text">Data Keluarga</span>
+          </h2>
+          <p class="text-slate-600">Isi formulir di bawah untuk menambahkan atau mengubah data anggota keluarga.</p>
+        </div>
+
+        <div class="flex justify-center mb-10">
+          <div class="flex items-center gap-3">
+            <div class="step-dot active">1</div>
+            <div class="w-16 h-1 bg-brand-500 rounded-full"></div>
+            <div class="step-dot">2</div>
+            <div class="w-16 h-1 bg-slate-200 rounded-full"></div>
+            <div class="step-dot">3</div>
+          </div>
+        </div>
+
+        <div class="glass rounded-3xl p-8 md:p-10 shadow-2xl animate-scale-in">
+          <form id="familyForm" class="space-y-6">
+
+            <input type="hidden" id="edit-id" name="edit-id" value="">
+
+            <div id="step-1" class="space-y-6">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b-2 border-brand-500">
+                <div
+                  class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 text-white flex items-center justify-center font-bold shadow-lg">
+                  1
+                </div>
+                <h3 class="text-2xl font-bold text-slate-900">Informasi Dasar</h3>
+              </div>
+
+              <div class="flex flex-col items-center justify-center mb-6">
+                <div class="relative group cursor-pointer" onclick="document.getElementById('input-foto').click()">
+                  <div
+                    class="w-32 h-32 rounded-full border-4 border-white shadow-xl overflow-hidden bg-slate-100 relative">
+                    <img id="preview-foto" src="" class="w-full h-full object-cover hidden">
+                    <div id="placeholder-foto"
+                      class="absolute inset-0 flex flex-col items-center justify-center text-slate-300 transition-colors group-hover:text-brand-400">
+                      <i class="fas fa-camera text-3xl mb-1"></i>
+                      <span class="text-[10px] font-bold uppercase">Upload</span>
+                    </div>
+                    <div
+                      class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <i class="fas fa-edit text-white text-xl"></i>
+                    </div>
+                  </div>
+                  <p id="file-name" class="text-xs text-center text-slate-400 mt-2 font-medium">Klik untuk ganti foto
+                  </p>
+                </div>
+                <input type="file" id="input-foto" accept="image/*" class="hidden" onchange="handleFileSelect(this)">
+              </div>
+              <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                  <label class="block text-sm font-bold text-slate-700 flex items-center gap-2">
+                    <i class="fas fa-user text-brand-500"></i>
+                    Nama Lengkap
+                  </label>
+                  <input type="text" id="nama" required placeholder="Contoh: Budi Santoso" class="input-field" />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-sm font-bold text-slate-700 flex items-center gap-2">
+                    <i class="fas fa-venus-mars text-brand-500"></i>
+                    Jenis Kelamin
+                  </label>
+                  <select id="gender" required class="input-field">
+                    <option value="">Pilih Gender</option>
+                    <option value="L">Laki-laki</option>
+                    <option value="P">Perempuan</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                  <label class="block text-sm font-bold text-slate-700 flex items-center gap-2">
+                    <i class="fas fa-layer-group text-brand-500"></i>
+                    Generasi
+                  </label>
+                  <select id="generasi" required onchange="loadParentsList()" class="input-field">
+                    <option value="">Pilih Generasi</option>
+                  </select>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-sm font-bold text-slate-700 flex items-center gap-2">
+                    <i class="fas fa-users text-brand-500"></i>
+                    Orang Tua
+                  </label>
+                  <select id="orangTua" required class="input-field">
+                    <option value="">Pilih dulu Generasi</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="flex justify-end mt-8">
+                <button type="button" onclick="nextStep(2)"
+                  class="btn-modern bg-gradient-to-r from-brand-500 to-brand-600 text-white px-8 py-4 rounded-2xl font-bold shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 flex items-center gap-3">
+                  <span class="relative z-10">Lanjut ke Langkah 2</span>
+                  <i class="fa-solid fa-arrow-right relative z-10"></i>
+                </button>
+              </div>
+            </div>
+
+            <div id="step-2" class="hidden space-y-6">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b-2 border-brand-500">
+                <div
+                  class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 text-white flex items-center justify-center font-bold shadow-lg">
+                  2
+                </div>
+                <h3 class="text-2xl font-bold text-slate-900">Status & Pasangan</h3>
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                  <label class="block text-sm font-bold text-slate-700 flex items-center gap-2">
+                    <i class="fas fa-heartbeat text-brand-500"></i>
+                    Status Hidup
+                  </label>
+                  <select id="status" required class="input-field" onchange="toggleTglMeninggal()">
+                    <option value="">Pilih Status</option>
+                    <option value="Hidup">Hidup</option>
+                    <option value="Almarhum">Almarhum</option>
+                  </select>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-sm font-bold text-slate-700 flex items-center gap-2">
+                    <i class="fas fa-heart text-brand-500"></i>
+                    Nama Pasangan (Opsional)
+                  </label>
+                  <input type="text" id="pasangan" placeholder="Kosongkan jika belum menikah" class="input-field" />
+                </div>
+              </div>
+
+              <!-- Tanggal Meninggal (muncul hanya jika Almarhum) -->
+              <div id="tgl-meninggal-wrap" class="hidden space-y-2">
+                <label class="block text-sm font-bold text-slate-700 flex items-center gap-2">
+                  <i class="fas fa-dove text-slate-400"></i>
+                  Tanggal Meninggal (Opsional)
+                </label>
+                <input type="date" id="tglMeninggal" class="input-field" />
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                  <label class="block text-sm font-bold text-slate-700 flex items-center gap-2">
+                    <i class="fas fa-map-marker-alt text-brand-500"></i>
+                    Alamat (Opsional)
+                  </label>
+                  <input type="text" id="alamat" placeholder="Contoh: Jl. Merdeka No. 10, Jakarta"
+                    class="input-field" />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-sm font-bold text-slate-700 flex items-center gap-2">
+                    <i class="fas fa-phone text-brand-500"></i>
+                    No. HP (Opsional)
+                  </label>
+                  <input type="text" id="noHp" placeholder="Contoh: 0812-3456-7890" class="input-field" />
+                </div>
+              </div>
+
+              <div class="flex justify-between mt-8">
+                <button type="button" onclick="prevStep(1)"
+                  class="btn-secondary px-8 py-4 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center gap-3">
+                  <i class="fa-solid fa-arrow-left"></i>
+                  Kembali
+                </button>
+                <button type="button" onclick="nextStep(3)"
+                  class="btn-modern bg-gradient-to-r from-brand-500 to-brand-600 text-white px-8 py-4 rounded-2xl font-bold shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 flex items-center gap-3">
+                  <span class="relative z-10">Lanjut ke Langkah 3</span>
+                  <i class="fa-solid fa-arrow-right relative z-10"></i>
+                </button>
+              </div>
+            </div>
+
+            <div id="step-3" class="hidden space-y-6">
+              <div class="flex items-center gap-3 mb-6 pb-4 border-b-2 border-brand-500">
+                <div
+                  class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 text-white flex items-center justify-center font-bold shadow-lg">
+                  3
+                </div>
+                <h3 class="text-2xl font-bold text-slate-900">Data Anak (Opsional)</h3>
+              </div>
+
+              <div class="bg-blue-50 border border-blue-200 rounded-2xl p-5 mb-6">
+                <div class="flex items-start gap-3">
+                  <i class="fas fa-info-circle text-blue-500 text-xl mt-1"></i>
+                  <div>
+                    <h4 class="font-bold text-blue-900 mb-1">Tips Pengisian</h4>
+                    <p class="text-sm text-blue-700">Anda bisa menambahkan nama-nama anak. Klik tombol "Tambah Anak"
+                      untuk menambahkan lebih banyak.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div id="anak-container" class="space-y-4">
+              </div>
+
+              <button type="button" onclick="addAnakField()"
+                class="w-full py-4 border-2 border-dashed border-brand-300 rounded-2xl text-brand-600 font-bold hover:bg-brand-50 hover:border-brand-500 transition-all flex items-center justify-center gap-2 group">
+                <i class="fas fa-plus-circle group-hover:rotate-90 transition-transform"></i>
+                Tambah Anak
+              </button>
+
+              <div class="flex justify-between mt-8 pt-6 border-t-2 border-slate-200">
+                <button type="button" onclick="prevStep(2)"
+                  class="btn-secondary px-8 py-4 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center gap-3">
+                  <i class="fa-solid fa-arrow-left"></i>
+                  Kembali
+                </button>
+                <button type="submit"
+                  class="btn-modern bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-10 py-4 rounded-2xl font-black shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 flex items-center gap-3 text-lg">
+                  <i class="fas fa-check-circle relative z-10"></i>
+                  <span class="relative z-10">Simpan Data</span>
+                </button>
+              </div>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 glass border-t border-white/20 shadow-2xl">
+    <div id="mobile-nav-grid" class="grid grid-cols-3 gap-1 p-2">
+      <button onclick="switchTab('dashboard')" id="mobile-nav-dashboard"
+        class="mobile-nav-item active flex flex-col items-center justify-center py-3 rounded-xl transition-all">
+        <i class="fas fa-chart-line text-xl mb-1"></i>
+        <span class="text-xs font-bold">Dashboard</span>
+      </button>
+      <button onclick="switchTab('tree')" id="mobile-nav-tree"
+        class="mobile-nav-item flex flex-col items-center justify-center py-3 rounded-xl transition-all text-slate-500">
+        <i class="fas fa-project-diagram text-xl mb-1"></i>
+        <span class="text-xs font-bold">Pohon</span>
+      </button>
+      <button onclick="switchTab('form')" id="mobile-nav-form"
+        class="admin-only mobile-nav-item flex flex-col items-center justify-center py-3 rounded-xl transition-all text-slate-500">
+        <i class="fas fa-user-plus text-xl mb-1"></i>
+        <span class="text-xs font-bold">Tambah</span>
+      </button>
+    </div>
+  </nav>
+
+
+  <script>
+    // ==========================
+    // CONFIG API (WAJIB)
+    // ==========================
+    const API_URL = "https://script.google.com/macros/s/AKfycbxhco--LO182SkqVigGrsspN0WIdiR5EOS1PkoRunYZ4zuRIr1U7EsRoNQDuV3A9mvbjA/exec";
+
+    // ==========================
+    // HELPER FETCH
+    // ==========================
+    async function apiGet(action, params = {}) {
+      const query = new URLSearchParams({ action, ...params }).toString();
+      const res = await fetch(`${API_URL}?${query}`);
+      return res.json();
+    }
+
+    async function apiPost(data) {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(data)
+      });
+      return res.json();
+    }
+    // ============================================
+    // HELPER: URL CONVERTER (BARU)
+    // Mengubah link 'uc?export=view' menjadi link thumbnail
+    // agar bisa tampil di browser (mengatasi blokir CORS/Redirect)
+    // ============================================
+    function getDisplayUrl(url) {
+      if (!url) return "";
+
+      // Cek apakah ini link Google Drive format export=view
+      if (url.includes("drive.google.com/uc?export=view")) {
+        try {
+          // Ambil ID dari URL
+          const idMatch = url.match(/id=([^&]+)/);
+          if (idMatch && idMatch[1]) {
+            // Return format thumbnail (High Quality sz=w1000)
+            return "https://drive.google.com/thumbnail?sz=w1000&id=" + idMatch[1];
+          }
+        } catch (e) {
+          console.error("Gagal convert URL", e);
+        }
+      }
+      // Jika bukan link drive atau format lain, kembalikan apa adanya
+      return url;
+    }
+
+    // ============================================
+    // GLOBAL STATE & INITIALIZATION
+    // ============================================
+    let currentStep = 1;
+    let svg, g, zoom, root;
+    let treeUpdate = null; // Referensi ke fungsi update() di dalam renderTree
+    let allExpanded = false; // State tombol expand/collapse all
+    let anakCount = 0;
+
+    // Variabel Baru untuk Fitur Foto
+    let newPhotoData = "";
+    let oldPhotoUrl = "";
+
+    // Variabel Baru untuk Fitur Search
+    let searchIndex = [];
+
+    window.onload = async function () {
+      initSession();
+      loadDashboardStats();
+      loadGenerasiDropdown();
+      initializeTree();
+      initSearch(); // Inisialisasi fitur pencarian
+
+      // Hilangkan Loading Overlay
+      setTimeout(() => {
+        const overlay = document.getElementById('loading-overlay');
+        if (overlay) {
+          overlay.style.opacity = '0';
+          setTimeout(() => {
+            overlay.style.display = 'none';
+          }, 500);
+        }
+      }, 1500);
+    };
+
+    // ============================================
+    // TAB SWITCHING
+    // ============================================
+    function switchTab(tab) {
+      document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
+
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.classList.remove('bg-gradient-to-r', 'from-brand-500', 'to-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-500/30');
+        btn.classList.add('text-green-700');
+        btn.style.background = '';
+      });
+
+      document.querySelectorAll('.mobile-nav-item').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      document.getElementById(`view-${tab}`).classList.remove('hidden');
+      const navBtn = document.getElementById(`nav-${tab}`);
+      if (navBtn) {
+        navBtn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
+        navBtn.classList.add('text-white', 'shadow-lg');
+        navBtn.classList.remove('text-green-700');
+      }
+
+      const mobileBtn = document.getElementById(`mobile-nav-${tab}`);
+      if (mobileBtn) {
+        mobileBtn.classList.add('active');
+      }
+
+      if (tab === 'tree' && root) {
+        setTimeout(() => resetZoom(), 100);
+      }
+    }
+
+    document.getElementById('nav-form').addEventListener('click', () => resetFormState());
+    document.getElementById('mobile-nav-form').addEventListener('click', () => resetFormState());
+
+    // ============================================
+    // DASHBOARD STATS
+    // ============================================
+    async function loadDashboardStats() {
+      try {
+        const stats = await apiGet("stats");
+
+        document.getElementById('stat-gen').textContent = stats.generation;
+        document.getElementById('stat-parents').textContent = stats.parents;
+        document.getElementById('stat-members').textContent = stats.members;
+        document.getElementById('stat-children').textContent = stats.children;
+
+      } catch (err) {
+        console.error(err);
+        toastWarning('Gagal memuat statistik');
+      }
+    }
+
+    // ============================================
+    // SEARCH FEATURE LOGIC (BARU)
+    // ============================================
+    async function initSearch() {
+      try {
+        searchIndex = await apiGet("search");
+      } catch (err) {
+        console.error(err);
+      }
+
+      const input = document.getElementById('global-search');
+      const resultsDiv = document.getElementById('search-results');
+
+      if (input && resultsDiv) {
+        input.addEventListener('input', (e) => {
+          const query = e.target.value.toLowerCase();
+          if (query.length < 2) {
+            resultsDiv.classList.add('hidden');
+            return;
+          }
+
+          const matches = searchIndex.filter(item =>
+            item.name.toLowerCase().includes(query)
+          ).slice(0, 5);
+
+          renderSearchResults(matches, resultsDiv);
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!input.contains(e.target) && !resultsDiv.contains(e.target)) {
+            resultsDiv.classList.add('hidden');
+          }
+        });
+      }
+    }
+
+    const input = document.getElementById('global-search');
+    const resultsDiv = document.getElementById('search-results');
+
+    if (input && resultsDiv) {
+      // Event Listener Input
+      input.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        if (query.length < 2) {
+          resultsDiv.classList.add('hidden');
+          return;
+        }
+
+        const matches = searchIndex.filter(item =>
+          item.name.toLowerCase().includes(query)
+        ).slice(0, 5); // Batasi 5 hasil
+
+        renderSearchResults(matches, resultsDiv);
+      });
+
+      // Tutup dropdown jika klik di luar
+      document.addEventListener('click', (e) => {
+        if (!input.contains(e.target) && !resultsDiv.contains(e.target)) {
+          resultsDiv.classList.add('hidden');
+        }
+      });
+    }
+    }
+
+    function renderSearchResults(matches, container) {
+      if (matches.length === 0) {
+        container.innerHTML = '<div class="p-4 text-center text-slate-400 text-sm">Tidak ditemukan</div>';
+      } else {
+        container.innerHTML = matches.map(m => `
+          <div onclick="focusToMember('${m.id}')" class="flex items-center gap-3 p-3 hover:bg-brand-50 cursor-pointer transition-colors border-b border-slate-50 last:border-0">
+            <div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden shrink-0">
+              ${m.foto
+            ? `<img src="${getDisplayUrl(m.foto)}" class="w-full h-full object-cover">`
+            : `<div class="w-full h-full flex items-center justify-center text-slate-400"><i class="fas fa-user"></i></div>`
+          }
+            </div>
+            <div>
+              <p class="text-sm font-bold text-slate-800">${m.name}</p>
+              <p class="text-xs text-brand-500 font-medium">${m.gen}</p>
+            </div>
+          </div>
+        `).join('');
+      }
+      container.classList.remove('hidden');
+    }
+
+    // Penelusuran mendalam termasuk node yang di-collapse (_children)
+    function findNodeDeep(node, id) {
+      if (node.data.id === id) return node;
+      const kids = (node.children || []).concat(node._children || []);
+      for (const child of kids) {
+        const found = findNodeDeep(child, id);
+        if (found) return found;
+      }
+      return null;
+    }
+
+    // FUNGSI ZOOM KE ANGGOTA
+    function focusToMember(id) {
+      // 1. Bersihkan UI Search
+      const searchInput = document.getElementById('global-search');
+      const searchResults = document.getElementById('search-results');
+      if (searchInput) searchInput.value = '';
+      if (searchResults) searchResults.classList.add('hidden');
+
+      // 2. Pindah ke Tab Tree
+      switchTab('tree');
+
+      // 3. Pastikan tree sudah dimuat
+      if (!root || !treeUpdate) {
+        toastWarning('Pohon keluarga belum dimuat, coba lagi sebentar.');
+        return;
+      }
+
+      // 4. Cari node termasuk yang collapsed (_children)
+      let targetNode = findNodeDeep(root, id);
+
+      if (targetNode) {
+        // 5. Expand semua ancestor agar node terlihat
+        let ancestor = targetNode.parent;
+        while (ancestor) {
+          if (ancestor._children) {
+            ancestor.children = ancestor._children;
+            ancestor._children = null;
+          }
+          ancestor = ancestor.parent;
+        }
+
+        // 6. Re-render tree langsung (tanpa async ke server)
+        treeUpdate(root);
+
+        // 7. Zoom ke node setelah animasi render selesai
+        setTimeout(() => {
+          const nodeSelection = d3.selectAll('g.node').filter(d => d.data.id === id);
+          if (!nodeSelection.empty()) {
+            const d = nodeSelection.datum();
+            const transform = d3.zoomIdentity
+              .translate(window.innerWidth / 2, window.innerHeight / 2)
+              .scale(1.5)
+              .translate(-d.y, -d.x);
+
+            svg.transition()
+              .duration(1000)
+              .call(zoom.transform, transform);
+
+            // Highlight node yang ditemukan
+            nodeSelection.select('.card-face')
+              .transition().duration(300)
+              .attr('stroke', '#f59e0b')
+              .attr('stroke-width', 5)
+              .transition().duration(1200)
+              .attr('stroke', getGenColor(d.data.generation).border)
+              .attr('stroke-width', 2);
+          }
+        }, 600);
+
+      } else {
+        toastWarning('Anggota tidak ditemukan dalam pohon keluarga.');
+      }
+    }
+
+    // ============================================
+    // FOTO HANDLING FUNCTIONS
+    // ============================================
+    function handleFileSelect(input) {
+      const file = input.files[0];
+      if (file) {
+        if (file.size > 2 * 1024 * 1024) {
+          Swal.fire('File Terlalu Besar', 'Maksimal ukuran foto adalah 2MB', 'warning');
+          input.value = '';
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          newPhotoData = e.target.result;
+          const img = document.getElementById('preview-foto');
+          img.src = newPhotoData;
+          img.classList.remove('hidden');
+          document.getElementById('placeholder-foto').classList.add('hidden');
+          document.getElementById('file-name').textContent = file.name;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // ============================================
+    // FORM FUNCTIONS
+    // ============================================
+    async function loadGenerasiDropdown() {
+      try {
+        const list = await apiGet("generasi");
+
+        const select = document.getElementById('generasi');
+        select.innerHTML = '<option value="">Pilih Generasi</option>';
+
+        list.forEach(gen => {
+          const opt = document.createElement('option');
+          opt.value = gen;
+          opt.textContent = gen;
+          select.appendChild(opt);
+        });
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function loadParentsList() {
+      const gen = document.getElementById('generasi').value;
+      if (!gen) return;
+
+      const select = document.getElementById('orangTua');
+      select.disabled = true;
+      select.innerHTML = '<option>Memuat...</option>';
+
+      try {
+        const parents = await apiGet("parents", { gen });
+
+        select.innerHTML = '<option value="">Pilih Orang Tua</option>';
+
+        parents.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.id;
+          opt.textContent = p.name;
+          select.appendChild(opt);
+        });
+
+        select.disabled = false;
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function loadParentsListWithSelection(gen, selectedParentId) {
+      const select = document.getElementById('orangTua');
+      select.disabled = true;
+
+      try {
+        const parents = await apiGet("parents", { gen });
+
+        select.innerHTML = '<option value="">Pilih Orang Tua</option>';
+
+        parents.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.id;
+          opt.textContent = p.name;
+
+          if (p.id === selectedParentId) {
+            opt.selected = true;
+          }
+
+          select.appendChild(opt);
+        });
+
+        select.disabled = false;
+
+      } catch (err) {
+        console.error(err);
+        select.innerHTML = '<option value="">Gagal memuat</option>';
+      }
+    }
+
+    function nextStep(step) {
+      document.getElementById(`step-${currentStep}`).classList.add('hidden');
+      document.getElementById(`step-${step}`).classList.remove('hidden');
+
+      document.querySelectorAll('.step-dot').forEach((dot, index) => {
+        if (index < step) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+
+      currentStep = step;
+      document.getElementById('view-form').scrollTop = 0;
+    }
+
+    function prevStep(step) {
+      nextStep(step);
+    }
+
+    function addAnakField() {
+      anakCount++;
+      const container = document.getElementById('anak-container');
+      const div = document.createElement('div');
+      div.className = 'flex items-center gap-3 animate-slide-up';
+      div.innerHTML = `
+        <input type="text" 
+          class="input-field flex-1" 
+          placeholder="Nama Anak ${anakCount}" 
+          id="anak-${anakCount}" />
+        <button type="button" 
+          onclick="this.parentElement.remove()" 
+          class="w-12 h-12 rounded-xl bg-rose-100 text-rose-600 hover:bg-rose-200 transition-all flex items-center justify-center font-bold">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+      container.appendChild(div);
+    }
+
+    function resetFormState() {
+      document.getElementById('familyForm').reset();
+      document.getElementById('edit-id').value = "";
+      document.querySelector('#view-form h2').innerHTML =
+        `Form Input <span class="gradient-text">Data Keluarga</span>`;
+
+      document.getElementById('anak-container').innerHTML = '';
+      anakCount = 0;
+
+      // Reset Alamat & No HP
+      document.getElementById('alamat').value = '';
+      document.getElementById('noHp').value = '';
+
+      // Reset Tanggal Meninggal
+      document.getElementById('tglMeninggal').value = '';
+      document.getElementById('tgl-meninggal-wrap').classList.add('hidden');
+
+      // Reset Foto
+      newPhotoData = "";
+      oldPhotoUrl = "";
+      document.getElementById('preview-foto').src = "";
+      document.getElementById('preview-foto').classList.add('hidden');
+      document.getElementById('placeholder-foto').classList.remove('hidden');
+      document.getElementById('file-name').textContent = "Klik untuk upload foto";
+      document.getElementById('input-foto').value = "";
+
+      currentStep = 1;
+      document.getElementById('step-1').classList.remove('hidden');
+      document.getElementById('step-2').classList.add('hidden');
+      document.getElementById('step-3').classList.add('hidden');
+
+      document.querySelectorAll('.step-dot').forEach((dot, index) => {
+        index === 0 ? dot.classList.add('active') : dot.classList.remove('active');
+      });
+    }
+
+    // Toggle visibilitas field Tanggal Meninggal
+    function toggleTglMeninggal() {
+      const status = document.getElementById('status').value;
+      const wrap = document.getElementById('tgl-meninggal-wrap');
+      if (status === 'Almarhum') {
+        wrap.classList.remove('hidden');
+      } else {
+        wrap.classList.add('hidden');
+        document.getElementById('tglMeninggal').value = '';
+      }
+    }
+
+    // Form Submission
+    document.getElementById('familyForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      // Collect anak data
+      const anakList = [];
+
+      // PERBAIKAN DI SINI: Menambahkan 'input' di depan selector
+      // Agar <div id="anak-container"> tidak ikut terpilih
+      document.querySelectorAll('input[id^="anak-"]').forEach(input => {
+        if (input.value && input.value.trim()) {
+          anakList.push({ nama: input.value.trim() });
+        }
+      });
+
+      const formData = {
+        id: document.getElementById('edit-id').value || null,
+        nama: document.getElementById('nama').value,
+        gender: document.getElementById('gender').value,
+        generasi: document.getElementById('generasi').value,
+        parentId: document.getElementById('orangTua').value,
+        status: document.getElementById('status').value,
+        pasangan: document.getElementById('pasangan').value || '-',
+        alamat: document.getElementById('alamat').value || '',
+        noHp: document.getElementById('noHp').value || '',
+        tglMeninggal: document.getElementById('tglMeninggal').value || '',
+        anak: anakList,
+        newPhotoData: newPhotoData,
+        oldPhotoUrl: oldPhotoUrl
+      };
+
+      if (!formData.parentId) {
+        Swal.fire('Perhatian', 'Silahkan pilih Orang Tua terlebih dahulu', 'warning');
+        return;
+      }
+
+      Swal.fire({
+        title: 'Menyimpan Data...',
+        html: 'Mengamankan data ke database...',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+      });
+
+      try {
+        const result = await apiPost({
+          action: "save",
+          payload: formData,
+          token: sessionToken
+        });
+
+        if (result.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: result.message,
+            confirmButtonColor: '#0ea5e9'
+          }).then(() => {
+            resetFormState();
+            loadDashboardStats();
+            initializeTree();
+            switchTab('dashboard');
+          });
+        } else {
+          Swal.fire({ icon: 'error', title: 'Gagal!', text: result.message });
+        }
+
+      } catch (err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: err.message
+        });
+      }
+    });
+
+    // ============================================
+    // TREE VISUALIZATION & INTERACTION
+    // ============================================
+    async function initializeTree() {
+      try {
+        const data = await apiGet("tree");
+
+        if (!data) {
+          document.getElementById('tree-container').innerHTML =
+            '<div class="flex h-full items-center justify-center text-slate-400">Belum ada data</div>';
+          return;
+        }
+
+        renderTree(data);
+
+      } catch (err) {
+        console.error(err);
+        toastWarning('Gagal memuat pohon keluarga');
+      }
+    }
+
+    // ============================================================
+    // GENERATION COLOR PALETTE
+    // ============================================================
+    const GEN_COLORS = [
+      { bg: '#fef3c7', accent: '#d97706', text: '#78350f', border: '#fcd34d', emoji: '👴' }, // Gen 1 - Amber/Kakek-Nenek
+      { bg: '#fce7f3', accent: '#db2777', text: '#831843', border: '#f9a8d4', emoji: '👨‍👩‍👧' }, // Gen 2 - Pink
+      { bg: '#d1fae5', accent: '#059669', text: '#065f46', border: '#6ee7b7', emoji: '👨‍👩‍👧‍👦' }, // Gen 3 - Emerald
+      { bg: '#dbeafe', accent: '#2563eb', text: '#1e40af', border: '#93c5fd', emoji: '👦' }, // Gen 4 - Blue
+      { bg: '#ffedd5', accent: '#ea580c', text: '#9a3412', border: '#fdba74', emoji: '🧒' }, // Gen 5 - Orange
+      { bg: '#ede9fe', accent: '#7c3aed', text: '#5b21b6', border: '#c4b5fd', emoji: '👶' }, // Gen 6 - Violet
+      { bg: '#fdf4ff', accent: '#a21caf', text: '#701a75', border: '#e879f9', emoji: '🌟' }, // Gen 7 - Fuchsia
+      { bg: '#ecfdf5', accent: '#16a34a', text: '#14532d', border: '#86efac', emoji: '🌱' }, // Gen 8 - Green
+      { bg: '#fff7ed', accent: '#c2410c', text: '#7c2d12', border: '#fdba74', emoji: '🌿' }, // Gen 9 - Red-Orange
+      { bg: '#f0f9ff', accent: '#0284c7', text: '#075985', border: '#7dd3fc', emoji: '🍃' }, // Gen 10 - Sky
+    ];
+
+    function getGenColor(genStr) {
+      const num = parseInt((genStr || '').replace(/\D/g, '')) || 1;
+      return GEN_COLORS[(num - 1) % GEN_COLORS.length];
+    }
+
+    function renderTree(treeData) {
+      document.getElementById('tree-container').innerHTML = '';
+
+      // Reset tombol expand/collapse ke kondisi awal
+      allExpanded = false;
+      const btnExp = document.getElementById('btn-expand-all');
+      const lblExp = document.getElementById('label-expand-all');
+      if (btnExp) {
+        btnExp.style.background = 'rgba(255,255,255,0.15)';
+        btnExp.title = 'Buka semua generasi';
+        btnExp.querySelector('i').className = 'fas fa-sitemap text-sm';
+      }
+      if (lblExp) lblExp.innerHTML = 'Buka<br>Semua';
+
+      const width = window.innerWidth;
+      const height = window.innerHeight - 80;
+
+      svg = d3.select('#tree-container')
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .style('cursor', 'grab');
+
+      // ---- DEFS ----
+      const defs = svg.append('defs');
+
+      // Drop shadow filter
+      const filter = defs.append('filter')
+        .attr('id', 'card-shadow')
+        .attr('x', '-20%').attr('y', '-20%')
+        .attr('width', '140%').attr('height', '160%');
+      filter.append('feDropShadow')
+        .attr('dx', 0).attr('dy', 4).attr('stdDeviation', 6)
+        .attr('flood-color', 'rgba(0,0,0,0.10)');
+
+      const filterHover = defs.append('filter')
+        .attr('id', 'card-shadow-hover')
+        .attr('x', '-30%').attr('y', '-30%')
+        .attr('width', '160%').attr('height', '180%');
+      filterHover.append('feDropShadow')
+        .attr('dx', 0).attr('dy', 8).attr('stdDeviation', 14)
+        .attr('flood-color', 'rgba(14,165,233,0.22)');
+
+      g = svg.append('g');
+
+      zoom = d3.zoom()
+        .scaleExtent([0.08, 3])
+        .on('zoom', e => g.attr('transform', e.transform));
+      svg.call(zoom)
+        .on('dblclick.zoom', null);
+
+      const NODE_W = 260;
+      const NODE_H = 100;
+      const NODE_RX = 20;
+      const DEPTH_SPACING = 310;
+
+      const treemap = d3.tree()
+        .nodeSize([NODE_H + 28, DEPTH_SPACING])
+        .separation((a, b) => a.parent === b.parent ? 1.1 : 1.4);
+
+      root = d3.hierarchy(treeData, d => d.children);
+      root.x0 = 0;
+      root.y0 = 0;
+
+      // Collapse all but root
+      if (root.children) root.children.forEach(collapse);
+
+      // Build generation legend
+      buildGenLegend(root);
+
+      update(root);
+      resetZoom();
+
+      // Expose update function agar bisa dipanggil dari luar renderTree
+      treeUpdate = update;
+
+      // ---- HELPERS ----
+      function collapse(d) {
+        if (d.children) {
+          d._children = d.children;
+          d._children.forEach(collapse);
+          d.children = null;
+        }
+      }
+
+      function expandAll(d) {
+        if (d._children) {
+          d.children = d._children;
+          d._children = null;
+        }
+        if (d.children) d.children.forEach(expandAll);
+      }
+
+      function collapseAll(d) {
+        if (d.children) {
+          d._children = d.children;
+          d._children.forEach(collapseAll);
+          d.children = null;
+        }
+      }
+
+      window.toggleExpandAll = function () {
+        if (!root || !treeUpdate) return;
+        allExpanded = !allExpanded;
+
+        if (allExpanded) {
+          expandAll(root);
+        } else {
+          if (root.children) root.children.forEach(collapseAll);
+        }
+
+        treeUpdate(root);
+
+        const btn = document.getElementById('btn-expand-all');
+        const label = document.getElementById('label-expand-all');
+        if (allExpanded) {
+          btn.style.background = 'rgba(34,197,94,0.45)';
+          btn.title = 'Tutup semua generasi';
+          btn.querySelector('i').className = 'fas fa-compress-alt text-sm';
+          label.innerHTML = 'Tutup<br>Semua';
+        } else {
+          btn.style.background = 'rgba(255,255,255,0.15)';
+          btn.title = 'Buka semua generasi';
+          btn.querySelector('i').className = 'fas fa-sitemap text-sm';
+          label.innerHTML = 'Buka<br>Semua';
+        }
+
+        setTimeout(() => resetZoom(), 550);
+      };
+
+      function buildGenLegend(r) {
+        const genSet = new Set();
+        r.each(d => { if (d.data.generation) genSet.add(d.data.generation); });
+        const gens = Array.from(genSet).sort((a, b) => {
+          return parseInt(a.replace(/\D/g, '')) - parseInt(b.replace(/\D/g, ''));
+        });
+        const container = document.getElementById('gen-legend-items');
+        container.innerHTML = '';
+        gens.forEach(gen => {
+          const c = getGenColor(gen);
+          const el = document.createElement('div');
+          el.className = 'flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-bold whitespace-nowrap';
+          el.style.background = c.bg;
+          el.style.color = c.text;
+          el.style.border = `1.5px solid ${c.border}`;
+          el.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:${c.accent};display:inline-block;flex-shrink:0;"></span>${gen}`;
+          container.appendChild(el);
+        });
+        const legend = document.getElementById('gen-legend');
+        if (gens.length > 0) {
+          legend.classList.remove('hidden');
+          // Panel tersembunyi by default, hanya tombol yang tampil
+          document.getElementById('gen-legend-panel').classList.add('hidden');
+          document.getElementById('gen-legend-chevron').style.transform = 'rotate(0deg)';
+        }
+      }
+
+      // ---- UPDATE FUNCTION ----
+      function update(source) {
+        const td = treemap(root);
+        const nodes = td.descendants();
+        const links = td.links();
+
+        nodes.forEach(d => { d.y = d.depth * DEPTH_SPACING; });
+
+        let i = 0;
+        const node = g.selectAll('g.node').data(nodes, d => d.id || (d.id = ++i));
+
+        const nodeEnter = node.enter().append('g')
+          .attr('class', 'node')
+          .attr('transform', d => `translate(${source.y0 || 0},${source.x0 || 0})`)
+          .style('opacity', 0)
+          .on('click', click);
+
+        // ---- CARD ----
+        const HALF_W = NODE_W / 2;
+        const HALF_H = NODE_H / 2;
+
+        // Card shadow (blurred rect behind)
+        nodeEnter.append('rect')
+          .attr('class', 'card-bg')
+          .attr('width', NODE_W).attr('height', NODE_H)
+          .attr('x', -HALF_W).attr('y', -HALF_H)
+          .attr('rx', NODE_RX)
+          .attr('fill', '#fff')
+          .attr('filter', 'url(#card-shadow)');
+
+        // Coloured left accent bar
+        nodeEnter.append('rect')
+          .attr('width', 8).attr('height', NODE_H - 24)
+          .attr('x', -HALF_W + 0).attr('y', -HALF_H + 12)
+          .attr('rx', 4)
+          .attr('fill', d => getGenColor(d.data.generation).accent);
+
+        // White card face (covers shadow bleed on left)
+        nodeEnter.append('rect')
+          .attr('class', 'card-face')
+          .attr('width', NODE_W).attr('height', NODE_H)
+          .attr('x', -HALF_W).attr('y', -HALF_H)
+          .attr('rx', NODE_RX)
+          .attr('fill', '#fff')
+          .attr('stroke', d => getGenColor(d.data.generation).border)
+          .attr('stroke-width', 2)
+          .attr('fill-opacity', 0.96)
+          .style('transition', 'stroke 0.3s');
+
+        // Subtle header band at top using gen color
+        nodeEnter.append('rect')
+          .attr('width', NODE_W - 4).attr('height', 26)
+          .attr('x', -HALF_W + 2).attr('y', -HALF_H + 2)
+          .attr('rx', NODE_RX - 2)
+          .attr('fill', d => getGenColor(d.data.generation).bg)
+          .attr('ry', 0);
+
+        // Fix header band bottom corners (no round)
+        nodeEnter.append('rect')
+          .attr('width', NODE_W - 4).attr('height', 14)
+          .attr('x', -HALF_W + 2).attr('y', -HALF_H + 14)
+          .attr('fill', d => getGenColor(d.data.generation).bg);
+
+        // Generation label in header
+        nodeEnter.append('text')
+          .attr('x', -HALF_W + 18).attr('y', -HALF_H + 17)
+          .attr('text-anchor', 'start')
+          .style('font-size', '10px').style('font-weight', '800')
+          .style('letter-spacing', '0.06em')
+          .attr('fill', d => getGenColor(d.data.generation).text)
+          .text(d => d.data.generation || '');
+
+        // Status dot (top right)
+        nodeEnter.append('circle')
+          .attr('cx', HALF_W - 14).attr('cy', -HALF_H + 14).attr('r', 6)
+          .attr('fill', d => d.data.status === 'Hidup' ? '#10b981' : '#94a3b8')
+          .attr('stroke', '#fff').attr('stroke-width', 2);
+
+        // Status tooltip text near dot
+        nodeEnter.append('text')
+          .attr('x', HALF_W - 22).attr('y', -HALF_H + 19)
+          .attr('text-anchor', 'end')
+          .style('font-size', '9px').style('font-weight', '600')
+          .attr('fill', d => d.data.status === 'Hidup' ? '#10b981' : '#94a3b8')
+          .text(d => d.data.status);
+
+        // ---- AVATAR CIRCLE ----
+        const AVATAR_CX = -HALF_W + 52;
+        const AVATAR_CY = 14;
+        const AVATAR_R = 27;
+
+        // Avatar bg ring
+        nodeEnter.append('circle')
+          .attr('cx', AVATAR_CX).attr('cy', AVATAR_CY).attr('r', AVATAR_R + 3)
+          .attr('fill', d => getGenColor(d.data.generation).bg)
+          .attr('stroke', d => getGenColor(d.data.generation).border)
+          .attr('stroke-width', 2);
+
+        // Clip path per node
+        nodeEnter.append('defs')
+          .append('clipPath')
+          .attr('id', d => `clip-${d.id}`)
+          .append('circle')
+          .attr('cx', AVATAR_CX).attr('cy', AVATAR_CY).attr('r', AVATAR_R);
+
+        // Photo
+        nodeEnter.filter(d => d.data.foto)
+          .append('image')
+          .attr('href', d => getDisplayUrl(d.data.foto))
+          .attr('x', AVATAR_CX - AVATAR_R).attr('y', AVATAR_CY - AVATAR_R)
+          .attr('width', AVATAR_R * 2).attr('height', AVATAR_R * 2)
+          .attr('preserveAspectRatio', 'xMidYMid slice')
+          .attr('clip-path', d => `url(#clip-${d.id})`);
+
+        // Default icon (no photo) — gender icon
+        nodeEnter.filter(d => !d.data.foto)
+          .append('text')
+          .attr('x', AVATAR_CX).attr('y', AVATAR_CY + 9)
+          .attr('text-anchor', 'middle')
+          .style('font-size', '28px')
+          .text(d => {
+            const genNum = parseInt((d.data.generation || '').replace(/\D/g, '')) || 1;
+            if (genNum === 1) return d.data.gender === 'P' ? '👵' : '👴';
+            if (genNum === 2) return d.data.gender === 'P' ? '👩' : '👨';
+            if (genNum === 3) return d.data.gender === 'P' ? '👩' : '👨';
+            if (genNum <= 5) return d.data.gender === 'P' ? '👧' : '👦';
+            return d.data.gender === 'P' ? '👶' : '👶';
+          });
+
+        // Gender badge (small pill below avatar)
+        nodeEnter.append('rect')
+          .attr('width', 24).attr('height', 14)
+          .attr('x', AVATAR_CX - 12).attr('y', AVATAR_CY + AVATAR_R - 2)
+          .attr('rx', 7)
+          .attr('fill', d => d.data.gender === 'P' ? '#fce7f3' : '#dbeafe')
+          .attr('stroke', d => d.data.gender === 'P' ? '#f9a8d4' : '#93c5fd')
+          .attr('stroke-width', 1.5);
+        nodeEnter.append('text')
+          .attr('x', AVATAR_CX).attr('y', AVATAR_CY + AVATAR_R + 8)
+          .attr('text-anchor', 'middle')
+          .style('font-size', '9px').style('font-weight', '800')
+          .attr('fill', d => d.data.gender === 'P' ? '#db2777' : '#2563eb')
+          .text(d => d.data.gender === 'P' ? '♀' : '♂');
+
+        // ---- TEXT INFO ----
+        const TEXT_X = AVATAR_CX + AVATAR_R + 14;
+
+        // Name
+        nodeEnter.append('text')
+          .attr('x', TEXT_X).attr('y', AVATAR_CY - 10)
+          .attr('text-anchor', 'start')
+          .style('font-size', '14px').style('font-weight', '800')
+          .attr('fill', '#0f172a')
+          .text(d => {
+            const nm = d.data.name || '';
+            return nm.length > 17 ? nm.substring(0, 17) + '…' : nm;
+          });
+
+        // Pasangan
+        nodeEnter.append('text')
+          .attr('x', TEXT_X).attr('y', AVATAR_CY + 8)
+          .attr('text-anchor', 'start')
+          .style('font-size', '11px').style('font-weight', '500')
+          .attr('fill', '#64748b')
+          .text(d => {
+            const p = d.data.pasangan;
+            if (!p || p === '-') return '';
+            const prefix = '❤ ';
+            const label = p.length > 14 ? p.substring(0, 14) + '…' : p;
+            return prefix + label;
+          });
+
+        // No HP (if present)
+        nodeEnter.append('text')
+          .attr('x', TEXT_X).attr('y', AVATAR_CY + 24)
+          .attr('text-anchor', 'start')
+          .style('font-size', '10px').style('font-weight', '500')
+          .attr('fill', '#94a3b8')
+          .text(d => d.data.noHp ? '📞 ' + d.data.noHp : '');
+
+        // ---- EXPAND/COLLAPSE BUTTON ----
+        const expandG = nodeEnter.filter(d => d.children || d._children).append('g')
+          .attr('class', 'expand-btn')
+          .attr('transform', `translate(${HALF_W + 2}, 0)`)
+          .style('cursor', 'pointer')
+          .on('click', function (event, d) {
+            event.stopPropagation(); // Jangan bubble ke node click handler
+            if (d.children) { d._children = d.children; d.children = null; }
+            else { d.children = d._children; d._children = null; }
+            update(d);
+          });
+
+        expandG.append('circle')
+          .attr('r', 13)
+          .attr('fill', d => getGenColor(d.data.generation).accent)
+          .attr('stroke', '#fff')
+          .attr('stroke-width', 2.5)
+          .style('filter', 'drop-shadow(0 2px 4px rgba(0,0,0,0.15))');
+
+        expandG.append('text')
+          .attr('dy', 5).attr('text-anchor', 'middle')
+          .style('font-size', '18px').style('font-weight', '900')
+          .attr('fill', '#fff')
+          .text(d => d._children ? '+' : '−');
+
+        // Child count badge
+        nodeEnter.filter(d => (d.children || d._children)).append('text')
+          .attr('x', HALF_W + 2).attr('y', 28)
+          .attr('text-anchor', 'middle')
+          .style('font-size', '9px').style('font-weight', '700')
+          .attr('fill', d => getGenColor(d.data.generation).accent)
+          .text(d => {
+            const kids = (d.children || d._children || []).length;
+            return kids > 0 ? kids + ' anak' : '';
+          });
+
+        // ---- MERGE & TRANSITION ----
+        const nodeUpdate = node.merge(nodeEnter)
+          .transition().duration(500).ease(d3.easeCubicOut)
+          .attr('transform', d => `translate(${d.y},${d.x})`)
+          .style('opacity', 1);
+
+        nodeUpdate.select('.expand-btn text').text(d => d._children ? '+' : '−');
+
+        node.exit()
+          .transition().duration(400)
+          .attr('transform', d => `translate(${source.y},${source.x})`)
+          .style('opacity', 0)
+          .remove();
+
+        // ---- LINKS ----
+        const link = g.selectAll('path.link').data(links, d => d.target.id);
+
+        const linkEnter = link.enter().insert('path', 'g')
+          .attr('class', 'link')
+          .attr('d', () => {
+            const o = { x: source.x0 || 0, y: source.y0 || 0 };
+            return diagonal(o, o);
+          })
+          .style('opacity', 0);
+
+        link.merge(linkEnter)
+          .transition().duration(500).ease(d3.easeCubicOut)
+          .attr('d', d => diagonal(d.source, d.target))
+          .style('opacity', 1)
+          .attr('stroke', d => getGenColor(d.target.data.generation).accent)
+          .attr('stroke-width', 2.5)
+          .attr('stroke-dasharray', d => d.target.data.status === 'Almarhum' ? '7,4' : 'none')
+          .attr('fill', 'none')
+          .attr('stroke-opacity', 0.55);
+
+        link.exit()
+          .transition().duration(300)
+          .style('opacity', 0)
+          .remove();
+
+        nodes.forEach(d => { d.x0 = d.x; d.y0 = d.y; });
+      }
+
+      function diagonal(s, d) {
+        const mx = (s.y + d.y) / 2;
+        return `M ${s.y} ${s.x} C ${mx} ${s.x}, ${mx} ${d.x}, ${d.y} ${d.x}`;
+      }
+
+      function click(event, d) {
+        // Selalu tampilkan popup detail untuk semua node (termasuk parent/pewaris utama)
+        // Expand/collapse sudah ditangani oleh tombol +/− secara terpisah
+        const c = getGenColor(d.data.generation);
+        let imageHtml = '';
+        if (d.data.foto) {
+          imageHtml = `<div class="flex justify-center mb-5"><div class="w-28 h-28 rounded-full border-4 shadow-lg overflow-hidden" style="border-color:${c.border}"><img src="${getDisplayUrl(d.data.foto)}" class="w-full h-full object-cover"></div></div>`;
+        } else {
+          imageHtml = `<div class="flex justify-center mb-5">
+            <div class="w-24 h-24 rounded-full flex items-center justify-center text-5xl shadow-lg" style="background:${c.bg};border:3px solid ${c.border}">
+              ${d.data.gender === 'P' ? '♀' : '♂'}
+            </div></div>`;
+        }
+
+        Swal.fire({
+          title: `<span class="font-black" style="color:${c.text}">${d.data.name}</span>`,
+          html: `
+            <div class="text-left">
+              ${imageHtml}
+              <div class="rounded-2xl p-4 space-y-2.5 mb-4" style="background:${c.bg};border:1.5px solid ${c.border}">
+                <div class="flex items-center gap-3 text-sm">
+                  <span class="w-6 text-center text-base">🌿</span>
+                  <span class="font-semibold" style="color:${c.text}">${d.data.generation}</span>
+                </div>
+                <div class="flex items-center gap-3 text-sm">
+                  <span class="w-6 text-center">${d.data.gender === 'P' ? '♀' : '♂'}</span>
+                  <span class="font-semibold text-slate-600">${d.data.gender === 'P' ? 'Perempuan' : 'Laki-laki'}</span>
+                </div>
+                <div class="flex items-center gap-3 text-sm">
+                  <span class="w-6 text-center">${d.data.status === 'Hidup' ? '🟢' : '⚪'}</span>
+                  <span class="font-bold ${d.data.status === 'Hidup' ? 'text-emerald-600' : 'text-slate-400'}">${d.data.status}</span>
+                </div>
+                ${d.data.status === 'Almarhum' && d.data.tglMeninggal ? `
+                <div class="flex items-center gap-3 text-sm">
+                  <span class="w-6 text-center">🕊️</span>
+                  <span class="font-semibold text-slate-500">${(() => {
+                const parts = d.data.tglMeninggal.split('-');
+                if (parts.length === 3) {
+                  return new Date(+parts[0], +parts[1] - 1, +parts[2])
+                    .toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+                }
+                return d.data.tglMeninggal;
+              })()}</span>
+                </div>` : ''}
+                ${d.data.pasangan && d.data.pasangan !== '-' ? `
+                <div class="flex items-center gap-3 text-sm">
+                  <span class="w-6 text-center">❤️</span>
+                  <span class="font-semibold text-slate-600">${d.data.pasangan}</span>
+                </div>` : ''}
+                ${d.data.alamat ? `
+                <div class="flex items-start gap-3 text-sm">
+                  <span class="w-6 text-center mt-0.5">📍</span>
+                  <span class="text-slate-600 leading-tight">${d.data.alamat}</span>
+                </div>` : ''}
+                ${d.data.noHp ? (() => {
+              const rawNum = d.data.noHp.replace(/[\s\-().]/g, '');
+              const waNum = rawNum.startsWith('0') ? '62' + rawNum.slice(1) : rawNum.startsWith('+') ? rawNum.slice(1) : rawNum;
+              return `
+                <div class="flex items-center gap-3 text-sm">
+                  <span class="w-6 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#25D366" class="inline-block" style="width:18px;height:18px;vertical-align:middle">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                    </svg>
+                  </span>
+                  <a href="https://wa.me/${waNum}" target="_blank" rel="noopener noreferrer" class="font-semibold hover:underline" style="color:#25D366">${d.data.noHp}</a>
+                </div>`;
+            })() : ''}
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                ${(sessionRole === 'admin' || sessionGenerasi === d.data.generation) ? `
+                <button onclick="window.triggerEdit('${d.data.id}')"
+                  class="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-bold text-sm transition-all hover:scale-105"
+                  style="background:#fefce8;color:#a16207;border:1.5px solid #fde68a">
+                  <i class="fas fa-edit"></i> Edit
+                </button>
+                <button onclick="window.triggerDelete('${d.data.id}', '${d.data.name}')"
+                  class="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-bold text-sm transition-all hover:scale-105"
+                  style="background:#fef2f2;color:#b91c1c;border:1.5px solid #fecaca">
+                  <i class="fas fa-trash-alt"></i> Hapus
+                </button>
+                ` : `<p class="col-span-2 text-center text-slate-400 text-xs italic py-2"><i class="fas fa-lock mr-1"></i> Tidak memiliki akses edit data ini.</p>`}
+              </div>
+            </div>`,
+          showConfirmButton: false,
+          showCloseButton: true,
+          customClass: { popup: 'rounded-3xl', closeButton: 'focus:outline-none' }
+        });
+      }
+    }
+
+    function resetZoom() {
+      svg.transition().duration(750).call(
+        zoom.transform,
+        d3.zoomIdentity.translate(window.innerWidth / 2 - 140, 100).scale(0.75)
+      );
+    }
+
+    // ============================================
+    // LEGEND TOGGLE FUNCTIONS
+    // ============================================
+    function toggleInfoLegend() {
+      const panel = document.getElementById('info-legend-panel');
+      const chevron = document.getElementById('info-legend-chevron');
+      const hidden = panel.classList.toggle('hidden');
+      chevron.style.transform = hidden ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+
+    function toggleGenLegend() {
+      const panel = document.getElementById('gen-legend-panel');
+      const chevron = document.getElementById('gen-legend-chevron');
+      const hidden = panel.classList.toggle('hidden');
+      chevron.style.transform = hidden ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+
+    function toastWarning(msg) {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3500,
+        timerProgressBar: true,
+        customClass: { popup: 'rounded-2xl shadow-2xl' },
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer);
+          toast.addEventListener('mouseleave', Swal.resumeTimer);
+        }
+      });
+      Toast.fire({ icon: 'warning', title: msg });
+    }
+
+    // ============================================
+    // GLOBAL CRUD ACTIONS (EDIT & DELETE)
+    // ============================================
+    window.triggerEdit = async function (id) {
+      Swal.close();
+      Swal.fire({ title: 'Mengambil Data...', didOpen: () => Swal.showLoading() });
+
+      try {
+        const data = await apiPost({
+          action: "getMember",
+          id
+        });
+
+        Swal.close();
+
+        if (!data) return toastWarning('Data tidak ditemukan');
+
+        switchTab('form');
+        document.querySelector('#view-form h2').innerHTML =
+          `Edit Data <span class="gradient-text">${data.nama}</span>`;
+
+        document.getElementById('edit-id').value = data.id;
+        document.getElementById('nama').value = data.nama;
+        document.getElementById('gender').value = data.gender;
+        document.getElementById('generasi').value = data.generasi;
+
+        loadParentsListWithSelection(data.generasi, data.parentId);
+
+        document.getElementById('status').value = data.status;
+        document.getElementById('pasangan').value =
+          (data.pasangan === '-' ? '' : data.pasangan);
+        document.getElementById('alamat').value = data.alamat || '';
+        document.getElementById('noHp').value = data.noHp || '';
+        document.getElementById('tglMeninggal').value = data.tglMeninggal || '';
+        toggleTglMeninggal();
+
+        // Handle Foto saat Edit
+        oldPhotoUrl = data.foto || "";
+        newPhotoData = "";
+
+        if (data.foto && data.foto.length > 5) {
+          const img = document.getElementById('preview-foto');
+          img.src = getDisplayUrl(data.foto);
+          img.classList.remove('hidden');
+          document.getElementById('placeholder-foto').classList.add('hidden');
+          document.getElementById('file-name').textContent = "Foto tersimpan";
+        }
+
+        document.getElementById('anak-container').innerHTML = '';
+        anakCount = 0;
+
+        if (data.anak && data.anak !== '-') {
+          const anakArray = data.anak.split(', ');
+          anakArray.forEach(namaAnak => {
+            addAnakField();
+            document.getElementById(`anak-${anakCount}`).value = namaAnak;
+          });
+        }
+
+        currentStep = 1;
+        document.getElementById('step-1').classList.remove('hidden');
+        document.getElementById('step-2').classList.add('hidden');
+        document.getElementById('step-3').classList.add('hidden');
+
+      } catch (err) {
+        console.error(err);
+        Swal.fire('Error', err.message || 'Gagal mengambil data', 'error');
+      }
+    };
+
+    window.triggerDelete = function (id, name) {
+      Swal.fire({
+        title: 'Hapus Data?',
+        text: `Apakah Anda yakin ingin menghapus ${name}? Data tidak bisa dikembalikan.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#cbd5e1',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          Swal.fire({ title: 'Menghapus...', didOpen: () => Swal.showLoading() });
+
+          try {
+            const res = await apiPost({
+              action: "deleteMember",
+              id,
+              token: sessionToken
+            });
+
+            if (res.success) {
+              Swal.fire('Terhapus!', res.message, 'success');
+              initializeTree();
+              loadDashboardStats();
+            } else {
+              Swal.fire('Gagal', res.message, 'error');
+            }
+
+          } catch (err) {
+            console.error(err);
+            Swal.fire('Error', 'Gagal menghapus data', 'error');
+          }
+        }
+      });
+    };
+
+    // ============================================
+    // SESSION & PASSWORD MANAGEMENT
+    // ============================================
+
+    let sessionToken = null;
+    let sessionRole = null;   // 'admin' | 'user'
+    let sessionGenerasi = ''; // generasi untuk role user
+    let loginRole = 'admin';  // role yang sedang dipilih di form login
+
+    function setLoginRole(role) {
+      loginRole = role;
+      const adminBtn = document.getElementById('role-btn-admin');
+      const userBtn = document.getElementById('role-btn-user');
+      const genWrap = document.getElementById('login-generasi-wrap');
+
+      if (role === 'admin') {
+        adminBtn.classList.add('bg-white', 'text-brand-600', 'shadow');
+        adminBtn.classList.remove('text-slate-500');
+        userBtn.classList.remove('bg-white', 'text-brand-600', 'shadow');
+        userBtn.classList.add('text-slate-500');
+        genWrap.classList.add('hidden');
+      } else {
+        userBtn.classList.add('bg-white', 'text-brand-600', 'shadow');
+        userBtn.classList.remove('text-slate-500');
+        adminBtn.classList.remove('bg-white', 'text-brand-600', 'shadow');
+        adminBtn.classList.add('text-slate-500');
+        genWrap.classList.remove('hidden');
+        // Isi dropdown generasi jika belum ada
+        const sel = document.getElementById('login-generasi');
+        if (sel.options.length <= 1) {
+          for (let i = 1; i <= 10; i++) {
+            const opt = document.createElement('option');
+            opt.value = `Generasi ${i}`;
+            opt.textContent = `Generasi ${i}`;
+            sel.appendChild(opt);
+          }
+        }
+      }
+    }
+
+    // Dipanggil pertama kali saat halaman dimuat
+    function initSession() {
+      const savedToken = sessionStorage.getItem('sst');
+      const savedRole = sessionStorage.getItem('ssr');
+      const savedGenerasi = sessionStorage.getItem('ssg');
+
+      if (savedToken) {
+        try {
+          const session = await apiPost({
+            action: "validateSession",
+            token: savedToken
+          });
+
+          if (session) {
+            sessionToken = savedToken;
+            sessionRole = session.role;
+            sessionGenerasi = session.generasi;
+
+            document.getElementById('login-overlay').style.display = 'none';
+            applyRoleUI();
+            bootApp();
+
+          } else {
+            sessionStorage.removeItem('sst');
+            sessionStorage.removeItem('ssr');
+            sessionStorage.removeItem('ssg');
+            showLoginOverlay();
+          }
+
+        } catch (err) {
+          console.error(err);
+          showLoginOverlay();
+        }
+
+      } else {
+        showLoginOverlay();
+      }
+    }
+
+    function showLoginOverlay() {
+      const overlay = document.getElementById('login-overlay');
+      overlay.style.display = 'flex';
+      overlay.style.opacity = '1';
+      setTimeout(() => document.getElementById('login-password').focus(), 300);
+    }
+
+    function toggleLoginPassword() {
+      const input = document.getElementById('login-password');
+      const icon = document.getElementById('login-eye-icon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+      }
+    }
+
+    async function doLogin() {
+      const input = document.getElementById('login-password');
+      const errorEl = document.getElementById('login-error');
+      const btn = document.getElementById('login-btn');
+      const password = input.value;
+      const generasi = loginRole === 'user'
+        ? document.getElementById('login-generasi').value
+        : '';
+
+      errorEl.classList.add('hidden');
+
+      if (!password) {
+        errorEl.textContent = 'Password tidak boleh kosong.';
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
+      if (loginRole === 'user' && !generasi) {
+        errorEl.textContent = 'Pilih generasi Anda terlebih dahulu.';
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Memeriksa...';
+
+      try {
+        const result = await apiPost({
+          action: "login",
+          password,
+          role: loginRole,
+          generasi
+        });
+
+        if (result.valid) {
+          sessionToken = result.token;
+          sessionRole = result.role;
+          sessionGenerasi = result.generasi;
+
+          sessionStorage.setItem('sst', sessionToken);
+          sessionStorage.setItem('ssr', sessionRole);
+          sessionStorage.setItem('ssg', sessionGenerasi);
+
+          const overlay = document.getElementById('login-overlay');
+          overlay.style.opacity = '0';
+          overlay.style.transition = 'opacity 0.5s ease';
+          setTimeout(() => overlay.style.display = 'none', 500);
+
+          errorEl.classList.add('hidden');
+          applyRoleUI();
+          bootApp();
+
+        } else {
+          errorEl.textContent = 'Password salah. Coba lagi.';
+          errorEl.classList.remove('hidden');
+          input.value = '';
+          input.focus();
+
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i> Masuk';
+        }
+
+      } catch (err) {
+        console.error(err);
+
+        errorEl.textContent = 'Terjadi kesalahan. Coba lagi.';
+        errorEl.classList.remove('hidden');
+
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i> Masuk';
+      }
+    }
+
+    // Terapkan UI sesuai role
+    function applyRoleUI() {
+      const isAdmin = sessionRole === 'admin';
+
+      // Sembunyikan/tampilkan elemen admin-only
+      document.querySelectorAll('.admin-only').forEach(el => {
+        el.style.display = isAdmin ? '' : 'none';
+      });
+
+      // Sesuaikan grid mobile nav (2 kolom untuk user, 3 untuk admin)
+      const mobileGrid = document.getElementById('mobile-nav-grid');
+      if (mobileGrid) {
+        mobileGrid.className = isAdmin
+          ? 'grid grid-cols-3 gap-1 p-2'
+          : 'grid grid-cols-2 gap-1 p-2';
+      }
+
+      // Update badge role
+      const badgeText = document.getElementById('role-badge-text');
+      const badge = document.getElementById('role-badge');
+      if (isAdmin) {
+        badgeText.textContent = 'ADMIN';
+        badge.className = 'inline-flex items-center gap-2 text-xs font-black text-white bg-gradient-to-r from-brand-500 to-brand-700 px-4 py-2 rounded-full shadow-lg';
+      } else {
+        badgeText.textContent = sessionGenerasi || 'USER';
+        badge.className = 'inline-flex items-center gap-2 text-xs font-black text-white bg-gradient-to-r from-emerald-500 to-emerald-700 px-4 py-2 rounded-full shadow-lg';
+        badge.querySelector('i').className = 'fas fa-user';
+      }
+    }
+
+    function doLogout() {
+      Swal.fire({
+        title: 'Keluar dari aplikasi?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#cbd5e1',
+        confirmButtonText: 'Ya, Keluar',
+        cancelButtonText: 'Batal',
+        customClass: { popup: 'rounded-3xl' }
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+
+          try {
+            // optional: hit backend untuk invalidate token
+            await apiPost({
+              action: "logout",
+              token: sessionToken
+            });
+          } catch (err) {
+            console.error("Logout API error (ignored):", err);
+          }
+
+          // clear session (tetap dilakukan walaupun API gagal)
+          sessionStorage.removeItem('sst');
+          sessionStorage.removeItem('ssr');
+          sessionStorage.removeItem('ssg');
+
+          sessionToken = null;
+          sessionRole = null;
+          sessionGenerasi = '';
+
+          document.getElementById('login-password').value = '';
+          document.getElementById('login-error').classList.add('hidden');
+          document.getElementById('login-btn').disabled = false;
+          document.getElementById('login-btn').innerHTML =
+            '<i class="fas fa-sign-in-alt mr-2"></i> Masuk';
+
+          // reset role
+          setLoginRole('admin');
+
+          showLoginOverlay();
+        }
+      });
+    }
+
+    function showChangePassword() {
+      Swal.fire({
+        title: 'Ganti Password',
+        html: `
+      <div class="space-y-3 text-left mt-2">
+        <p class="text-xs text-slate-500 bg-blue-50 border border-blue-100 rounded-xl p-3 mb-2">
+          <i class="fas fa-info-circle text-blue-400 mr-1"></i>
+          Password ini berlaku untuk <strong>semua pengguna</strong> (Admin & User).
+        </p>
+        <div>
+          <label class="text-sm font-bold text-slate-600 block mb-1">Password Lama</label>
+          <input type="password" id="swal-old-pass" class="w-full border-2 border-slate-200 rounded-xl p-3 focus:outline-none focus:border-blue-500" placeholder="Masukkan password lama">
+        </div>
+        <div>
+          <label class="text-sm font-bold text-slate-600 block mb-1">Password Baru</label>
+          <input type="password" id="swal-new-pass" class="w-full border-2 border-slate-200 rounded-xl p-3 focus:outline-none focus:border-blue-500" placeholder="Minimal 6 karakter">
+        </div>
+        <div>
+          <label class="text-sm font-bold text-slate-600 block mb-1">Konfirmasi Password Baru</label>
+          <input type="password" id="swal-confirm-pass" class="w-full border-2 border-slate-200 rounded-xl p-3 focus:outline-none focus:border-blue-500" placeholder="Ulangi password baru">
+        </div>
+      </div>
+    `,
+        confirmButtonText: 'Simpan Password',
+        confirmButtonColor: '#0ea5e9',
+        showCancelButton: true,
+        cancelButtonText: 'Batal',
+        customClass: { popup: 'rounded-3xl' },
+        preConfirm: () => {
+          const op = document.getElementById('swal-old-pass').value;
+          const np = document.getElementById('swal-new-pass').value;
+          const cp = document.getElementById('swal-confirm-pass').value;
+          if (!op || !np || !cp) { Swal.showValidationMessage('Semua kolom harus diisi'); return false; }
+          if (np !== cp) { Swal.showValidationMessage('Konfirmasi password tidak cocok'); return false; }
+          if (np.length < 6) { Swal.showValidationMessage('Password baru minimal 6 karakter'); return false; }
+          return { oldPass: op, newPass: np };
+        }
+      }).then(result => {
+        if (result.isConfirmed) {
+          Swal.fire({ title: 'Menyimpan...', didOpen: () => Swal.showLoading() });
+
+          try {
+            const res = await apiPost({
+              action: "changePassword",
+              token: sessionToken,
+              oldPass: result.value.oldPass,
+              newPass: result.value.newPass
+            });
+
+            if (res.success) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: res.message,
+                confirmButtonColor: '#0ea5e9'
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: res.message
+              });
+            }
+
+          } catch (err) {
+            console.error(err);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Terjadi kesalahan saat mengganti password'
+            });
+          }
+        }
+      });
+    }
+
+    // Fungsi load aplikasi setelah login berhasil
+    function bootApp() {
+      loadDashboardStats();
+      loadGenerasiDropdown();
+      initializeTree();
+      initSearch();
+
+      setTimeout(() => {
+        const overlay = document.getElementById('loading-overlay');
+        if (overlay) {
+          overlay.style.opacity = '0';
+          setTimeout(() => overlay.style.display = 'none', 500);
+        }
+      }, 1500);
+    }
+  </script>
+  <style>
+    /* Additional Custom Styles */
+    .btn-modern {
+      @apply relative overflow-hidden transition-all duration-300 ease-out;
+    }
+
+    .btn-secondary {
+      @apply bg-white text-slate-700 px-8 py-3 rounded-2xl font-bold border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all;
+    }
+
+    .input-field {
+      @apply w-full p-4 bg-white border-2 border-slate-200 rounded-2xl focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all text-slate-700 placeholder-slate-400 font-medium;
+    }
+
+    .step-dot {
+      @apply w-10 h-10 flex items-center justify-center rounded-full border-2 border-slate-300 bg-white text-slate-400 font-black text-base transition-all shadow-md;
+    }
+
+    .step-dot.active {
+      @apply border-brand-500 bg-gradient-to-br from-brand-500 to-brand-600 text-white shadow-lg shadow-brand-500/30 scale-110;
+    }
+  </style>
+</body>
+
+</html>
