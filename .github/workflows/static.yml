@@ -31,6 +31,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Inject API URL from Secrets
+        run: |
+          sed -i 's|URL_WEB_APP_ANDA|${{ secrets.APPS_SCRIPT_URL }}|g' index.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
