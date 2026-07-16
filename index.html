@@ -415,9 +415,18 @@
         // HELPER: Convert Drive URL to Thumbnail (Bypass CORS mixed-content)
         function getDisplayUrl(url) {
             if (!url) return "https://ui-avatars.com/api/?name=User&background=random";
-            if (url.includes("uc?export=view&id=")) {
-                return url.replace("uc?export=view&id=", "thumbnail?sz=w1000&id=");
+    
+            // Jika data berupa ID File Drive hasil perbaikan di atas (panjang karakter pendek & tidak ada 'http')
+            if (url.length < 50 && !url.includes("http")) {
+                return `https://drive.google.com/thumbnail?sz=w1000&id=${url}`;
             }
+    
+            // Antitesis untuk data lama yang telanjur menyimpan URL lengkap dengan parameter 'id='
+            if (url.includes("id=")) {
+                const id = url.split("id=")[1].split("&")[0];
+                return `https://drive.google.com/thumbnail?sz=w1000&id=${id}`;
+            }
+    
             return url;
         }
 
