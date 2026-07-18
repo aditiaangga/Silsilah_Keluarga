@@ -420,6 +420,10 @@
         let zoomObj = null;
         let svgGroup = null;
         let previousTab = 'dashboard';
+        let sessionTimer = null;
+        let warningTimer = null;
+        const SESSION_TIMEOUT = 3 * 60 * 1000; // 3 menit
+        const WARNING_TIME = 2 * 60 * 1000; // 2 menit sebelum timeout
 
         // HELPER: Convert Drive URL to Thumbnail (Bypass CORS mixed-content)
         function getDisplayUrl(url) {
@@ -439,6 +443,44 @@
             return url;
         }
 
+        // SESSION TIMEOUT
+        function resetSessionTimer() {
+            // Hapus timer yang berjalan
+            if (sessionTimer) clearTimeout(sessionTimer);
+            if (warningTimer) clearTimeout(warningTimer);
+
+            // Timer untuk peringatan (muncul WARNING_TIME sebelum timeout)
+            warningTimer = setTimeout(() => {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Sesi Akan Berakhir',
+                    text: `Anda tidak melakukan aktivitas selama ${SESSION_TIMEOUT/60000 - WARNING_TIME/60000} menit. Sesi akan berakhir dalam ${WARNING_TIME/60000} menit.`,
+                    confirmButtonText: 'Perpanjang Sesi',
+                    confirmButtonColor: '#166534',
+                    showCancelButton: true,
+                    cancelButtonText: 'Tidak',
+                    cancelButtonColor: '#6b7280',
+                    allowOutsideClick: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        resetSessionTimer(); // Reset timer dari awal
+                    }
+                });
+            }, SESSION_TIMEOUT - WARNING_TIME);
+
+            // Timer untuk logout (setelah SESSION_TIMEOUT)
+            sessionTimer = setTimeout(() => {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Sesi Berakhir',
+                    text: 'Anda tidak melakukan aktivitas selama ' + (SESSION_TIMEOUT/60000) + ' menit. Silakan login kembali.',
+                    timer: 3000,
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                }).then(() => logout());
+            }, SESSION_TIMEOUT);
+        }
+
         // INIT & UTILS
         document.addEventListener('DOMContentLoaded', () => {
             initGenDropdowns();
@@ -451,6 +493,13 @@
                 if(!document.getElementById('searchDropdown').contains(e.target)) {
                     document.getElementById('searchDropdown').classList.add('hide');
                 }
+            });
+
+            // Session timeout - reset timer setiap ada aktivitas user
+            ['click', 'keydown', 'mousemove', 'scroll', 'touchstart'].forEach(event => {
+                document.addEventListener(event, () => {
+                    if (currentUser) resetSessionTimer();
+                });
             });
         });
 
@@ -539,6 +588,7 @@
                     localStorage.setItem('silsilah_session', JSON.stringify(currentUser));
                     document.getElementById('loginOverlay').classList.add('hide');
                     document.getElementById('mainApp').classList.remove('hide');
+                    resetSessionTimer();
                     loadDashboard();
                 } else {
                     Swal.fire('Gagal', res.message, 'error');
@@ -560,6 +610,8 @@
         }
 
         function logout() {
+            if (sessionTimer) clearTimeout(sessionTimer);
+            if (warningTimer) clearTimeout(warningTimer);
             localStorage.removeItem('silsilah_session');
             location.reload();
         }
