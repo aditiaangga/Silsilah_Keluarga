@@ -427,6 +427,7 @@
         let previousTab = 'dashboard';
         let sessionTimer = null;
         let warningTimer = null;
+        let treeCacheDirty = true; // Flag: apakah tree perlu render ulang
         const SESSION_TIMEOUT = 15 * 60 * 1000; // 15 menit
         const WARNING_TIME = 2 * 60 * 1000; // 2 menit sebelum timeout
 
@@ -632,6 +633,7 @@
                     document.getElementById('statParent').innerText = res.data.parents;
                     document.getElementById('statChild').innerText = res.data.children;
                     rawTreeData = res.data.treeData; // cache for tree and search
+                    treeCacheDirty = true; // data baru, perlu render ulang tree
                 }
             } catch (e) { console.error(e); }
             hideLoading();
@@ -717,7 +719,14 @@
         function renderTree() {
             if(!rawTreeData || rawTreeData.length === 0) return;
             const container = document.getElementById('treeContainer');
+            
+            // Cache: jika tree sudah ada dan data belum berubah, skip render ulang
+            if(!treeCacheDirty && container.querySelector('svg')) {
+                return;
+            }
+            
             container.innerHTML = "";
+            treeCacheDirty = false; // tandai sudah di-render
             
             const width = container.clientWidth;
             const height = container.clientHeight;
@@ -760,6 +769,7 @@
         }
 
         function updateD3(source) {
+            let i = 0;
             const treeData = window.treeMap(window.rootData);
             const nodes = treeData.descendants();
             const links = treeData.descendants().slice(1);
