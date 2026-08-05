@@ -816,7 +816,7 @@
             cardBody.append('text')
                 .attr('x', 80).attr('y', -cardH/2 + 50)
                 .style('font-size', '12px').style('fill', '#4b5563')
-                .text(d => `${getGenStyle(d.data.Generasi).emoji} Gen ${d.data.Generasi} | ` + (d.data.Status === 'Almarhum' ? '✝️' : '🟢'));
+                .text(d => `${getGenStyle(d.data.Generasi).emoji} Gen ${d.data.Generasi} | ` + (d.data.Status === 'Almarhum' ? '🪦' : '🟢'));
 
             cardBody.append('text')
                 .attr('x', 80).attr('y', -cardH/2 + 70)
